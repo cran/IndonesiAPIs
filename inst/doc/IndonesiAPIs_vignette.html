@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>IndonesiAPIs: Access Indonesian Data via Public APIs and Curated Datasets</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">IndonesiAPIs: Access Indonesian Data via
+Public APIs and Curated Datasets</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(IndonesiAPIs)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; Adjuntando el paquete: &#39;dplyr&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The <code>IndonesiAPIs</code> package provides a unified interface to
+access open data from the <strong>World Bank API</strong>,
+<strong>Nager.Date API</strong>, and the <strong>REST Countries
+API</strong>, with a focus on <strong>Indonesia</strong>. It allows
+users to retrieve up-to-date or historical information on topics such as
+economic indicators, population statistics, national holidays, and basic
+geopolitical details.</p>
+<p>In addition to API-access functions, the package includes a curated
+collection of open datasets related to <strong>Indonesia</strong>. These
+datasets cover a wide range of topics including consumer prices, poverty
+probability, food prices by region, tourism destinations, and minimum
+wage statistics.</p>
+<p><code>IndonesiAPIs</code> is designed to support users working with
+data related to <strong>Indonesia</strong> by integrating international
+RESTful APIs with structured and reliable datasets from public,
+academic, and governmental sources into a single, easy-to-use R
+package.</p>
+<div id="functions-for-indonesiapis" class="section level2">
+<h2>Functions for IndonesiAPIs</h2>
+<p>The <code>IndonesiAPIs</code> package provides several core functions
+to access real-time and structured information about
+<strong>Indonesia</strong> from public APIs such as the <strong>World
+Bank API</strong>, <strong>Nager.Date</strong>, and the <strong>REST
+Countries API</strong>. Below is a list of the main functions included
+in the package:</p>
+<ul>
+<li><p><code>get_indonesia_child_mortality()</code>: Get Under-5
+Mortality Rate in Indonesia from World Bank</p></li>
+<li><p><code>get_indonesia_cpi()</code>: Get Indonesia’s Consumer Price
+Index from World Bank</p></li>
+<li><p><code>get_indonesia_energy_use()</code>: Get Indonesia’s Energy
+Use (kg of oil equivalent per capita) from World Bank</p></li>
+<li><p><code>get_indonesia_gdp()</code>: Get Indonesia’s GDP (Current
+US$) from World Bank</p></li>
+<li><p><code>get_indonesia_holidays()</code>: Get official public
+holidays in Indonesia for a given year,
+e.g. get_indonesia_holidays(2025)</p></li>
+<li><p><code>get_indonesia_hospital_beds()</code>: Get Hospital Beds per
+1,000 People in Indonesia from World Bank</p></li>
+<li><p><code>get_indonesia_life_expectancy()</code>: Get Indonesia’s
+Life Expectancy at Birth from World Bank</p></li>
+<li><p><code>get_indonesia_literacy_rate()</code>: Get Indonesia’s
+Literacy Rate (Age 15+) from World Bank</p></li>
+<li><p><code>get_indonesia_population()</code>: Get Indonesia’s Total
+Population from World Bank</p></li>
+<li><p><code>get_indonesia_unemployment()</code>: Get Indonesia’s
+Unemployment Rate from World Bank</p></li>
+<li><p><code>get_country_info_idn()</code>: Get Key Country Information
+About Indonesia from the REST Countries API</p></li>
+<li><p><code>view_datasets_IndonesiAPIs()</code>: View Available
+Datasets in IndonesiAPIs</p></li>
+</ul>
+<p>These functions allow users to access high-quality and structured
+information on <strong>Indonesia</strong>, which can be combined with
+tools like <strong>dplyr</strong> and <strong>ggplot2</strong> to
+support a wide range of data analysis, visualization, and research
+tasks. In the following sections, you’ll find examples on how to work
+with <code>IndonesiAPIs</code> in practical scenarios.</p>
+<div id="indonesias-gdp-current-us-from-world-bank-2022---2017" class="section level3">
+<h3>Indonesia’s GDP (Current US$) from World Bank 2022 - 2017</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>indonesia_gdp <span class="ot">&lt;-</span> <span class="fu">head</span>(<span class="fu">get_indonesia_gdp</span>())</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">print</span>(indonesia_gdp)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;   indicator         country    year   value value_label      </span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;     &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;            </span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; 1 GDP (current US$) Indonesia  2022 1.32e12 1,319,101,183,380</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; 2 GDP (current US$) Indonesia  2021 1.19e12 1,186,509,691,087</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; 3 GDP (current US$) Indonesia  2020 1.06e12 1,059,054,842,698</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; 4 GDP (current US$) Indonesia  2019 1.12e12 1,119,099,871,350</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; 5 GDP (current US$) Indonesia  2018 1.04e12 1,042,271,532,989</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 6 GDP (current US$) Indonesia  2017 1.02e12 1,015,618,744,160</span></span></code></pre></div>
+</div>
+<div id="indonesias-life-expectancy-at-birth-from-world-bank-2022---2017" class="section level3">
+<h3>Indonesia’s Life Expectancy at Birth from World Bank 2022 -
+2017</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>indonesia_life_expectancy <span class="ot">&lt;-</span> <span class="fu">head</span>(<span class="fu">get_indonesia_life_expectancy</span>())</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">print</span>(indonesia_life_expectancy)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   indicator                               country    year value</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                                   &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 1 Life expectancy at birth, total (years) Indonesia  2022  70.9</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 2 Life expectancy at birth, total (years) Indonesia  2021  67.5</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 3 Life expectancy at birth, total (years) Indonesia  2020  68.8</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 4 Life expectancy at birth, total (years) Indonesia  2019  70.3</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 5 Life expectancy at birth, total (years) Indonesia  2018  70.1</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 6 Life expectancy at birth, total (years) Indonesia  2017  70.0</span></span></code></pre></div>
+</div>
+<div id="indonesias-total-population-from-world-bank-2022---2017" class="section level3">
+<h3>Indonesia’s Total Population from World Bank 2022 - 2017</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>indonesia_population <span class="ot">&lt;-</span> <span class="fu">head</span>(<span class="fu">get_indonesia_population</span>())</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">print</span>(indonesia_population)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;   indicator         country    year     value value_label</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;      </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 1 Population, total Indonesia  2022 278830529 278,830,529</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; 2 Population, total Indonesia  2021 276758053 276,758,053</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; 3 Population, total Indonesia  2020 274814866 274,814,866</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; 4 Population, total Indonesia  2019 272489381 272,489,381</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 5 Population, total Indonesia  2018 269951846 269,951,846</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 6 Population, total Indonesia  2017 267346658 267,346,658</span></span></code></pre></div>
+</div>
+</div>
+<div id="top-10-regions-with-highest-average-minimum-wage-2015-2023" class="section level2">
+<h2>Top 10 Regions with Highest Average Minimum Wage (2015-2023)</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># Bar chart with better formatted x-axis</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>indonesia_minwage_tbl_df <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="fu">filter</span>(YEAR <span class="sc">&gt;=</span> <span class="dv">2015</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">group_by</span>(REGION) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_salary =</span> <span class="fu">mean</span>(SALARY, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_salary)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(REGION, avg_salary), <span class="at">y =</span> avg_salary)) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">format</span>(x, <span class="at">big.mark =</span> <span class="st">&quot;,&quot;</span>, <span class="at">scientific =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Top 10 Regions with Highest Average Minimum Wage (2015-2023)&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Indonesian Minimum Wage by Region&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Region&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Average Minimum Wage (IDR)&quot;</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Source: IndonesiAPIs package&quot;</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="dataset-suffixes" class="section level2">
+<h2>Dataset Suffixes</h2>
+<p>Each dataset in <code>IndonesiAPIs</code> is labeled with a
+<em>suffix</em> to indicate its structure and type:</p>
+<ul>
+<li><p><code>_df</code>: A standard data frame.</p></li>
+<li><p><code>_tbl_df</code>: A tibble data frame object.</p></li>
+</ul>
+</div>
+<div id="datasets-included-in-indonesiapis" class="section level2">
+<h2>Datasets Included in IndonesiAPIs</h2>
+<p>In addition to API access functions, <code>IndonesiAPIs</code> offers
+a curated collection of open datasets focused on
+<strong>Indonesia</strong>. These preloaded datasets cover a wide range
+of topics including consumer prices, poverty probability, food prices by
+region, tourism destinations, and minimum wage statistics. Below are
+some featured examples:</p>
+<ul>
+<li><p><code>Bali_tbl_df</code>: A tibble containing food price data in
+Bali, Indonesia.</p></li>
+<li><p><code>indonesia_minwage_tbl_df</code>: A tibble containing
+monthly minimum wage or Upah Minimum Regional (UMR) data in Indonesian
+Rupiah (IDR) across various regions of Indonesia from 1997 to
+2025.</p></li>
+<li><p><code>DKIJakarta_tbl_df</code>: A tibble containing food price
+data in DKI Jakarta, Indonesia.</p></li>
+</ul>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>The <code>IndonesiAPIs</code> package offers a unified interface for
+accessing both real-time data from public APIs and a curated collection
+of datasets about <strong>Indonesia</strong>. Covering a wide spectrum
+of topics from economic indicators, holidays, and demographic statistics
+via international APIs, to detailed datasets on consumer prices, poverty
+probability, food prices by region, tourism destinations, and minimum
+wage statistics, <code>IndonesiAPIs</code> provides users with reliable,
+structured, and high-quality data.</p>
+<p>Designed to support reproducible research, education, and data
+journalism, the package empowers users to analyze and visualize
+<strong>Indonesia</strong>-focused data directly within R, using tidy
+formats and well-documented sources.</p>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
