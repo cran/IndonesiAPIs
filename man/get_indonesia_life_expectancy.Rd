@@ -17,6 +17,7 @@ A tibble with the following columns:
   \item \code{year}: Year of the data (integer)
   \item \code{value}: Life expectancy value in numeric form (years)
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves Indonesia's life expectancy at birth (in years) for the years 2010 to 2022
@@ -30,8 +31,8 @@ If the API request fails or returns an error status code, the function returns \
 Requires internet connection. The data is retrieved in real time from the World Bank API.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_life_expectancy()
+\donttest{
+get_indonesia_life_expectancy()
 }
 
 }

@@ -1,6 +1,12 @@
 # IndonesiAPIs
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![CRAN status](https://www.r-pkg.org/badges/version/IndonesiAPIs)](https://CRAN.R-project.org/package=IndonesiAPIs)
+[![CRAN downloads (monthly)](https://cranlogs.r-pkg.org/badges/IndonesiAPIs?color=brightgreen)](https://cran.r-project.org/package=IndonesiAPIs)
+[![CRAN downloads (total)](https://cranlogs.r-pkg.org/badges/grand-total/IndonesiAPIs?color=blue)](https://cran.r-project.org/package=IndonesiAPIs)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17731434.svg)](https://doi.org/10.5281/zenodo.17731434)
+
+---
 
 The `IndonesiAPIs` package provides a unified interface to access open data from the **World Bank API**, **Nager.Date API**, and the **REST Countries API**, with a focus on **Indonesia**. It allows users to retrieve up-to-date or historical information on topics such as economic indicators, population statistics, national holidays, and basic geopolitical details.
 

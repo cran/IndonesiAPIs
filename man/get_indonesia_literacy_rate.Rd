@@ -10,13 +10,14 @@ World Bank Open Data API: \url{https://data.worldbank.org/indicator/SE.ADT.LITR.
 get_indonesia_literacy_rate()
 }
 \value{
-A tibble with the following columns:
+A tibble with columns:
 \itemize{
-  \item \code{indicator}: Indicator name (e.g., "Literacy rate, adult total (% of people ages 15 and above)")
-  \item \code{country}: Country name ("Indonesia")
-  \item \code{year}: Year of the data (integer)
-  \item \code{value}: Literacy rate as numeric percentage
+  \item \code{indicator}: Indicator name.
+  \item \code{country}: Country name ("Indonesia").
+  \item \code{year}: Year (integer).
+  \item \code{value}: Literacy rate (numeric percentage).
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves Indonesia's literacy rate for adults aged 15 and above,
@@ -25,17 +26,15 @@ The indicator used is \code{SE.ADT.LITR.ZS}.
 }
 \details{
 The function sends a GET request to the World Bank API.
-If the API request fails or returns an error status code, the function returns \code{NULL} with an informative message.
+If the request fails (timeout, network error, or invalid HTTP status),
+the function returns \code{NULL} with an informative message.
 }
 \note{
-Requires internet connection. The data is retrieved in real time from the World Bank API.
+Requires internet connection.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_literacy_rate()
+\donttest{
+get_indonesia_literacy_rate()
 }
 
-}
-\seealso{
-\code{\link[httr]{GET}}, \code{\link[jsonlite]{fromJSON}}, \code{\link[dplyr]{as_tibble}}
 }

@@ -17,6 +17,7 @@ A tibble with the following columns:
   \item \code{year}: Year of the data (integer)
   \item \code{value}: Consumer Price Index value in numeric form
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves Indonesia's Consumer Price Index (2010 = 100)
@@ -31,8 +32,8 @@ If the API request fails or returns an error status code, the function returns \
 Requires internet connection. The data is retrieved in real time from the World Bank API.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_cpi()
+\donttest{
+get_indonesia_cpi()
 }
 
 }

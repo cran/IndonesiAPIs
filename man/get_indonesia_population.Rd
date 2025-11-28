@@ -10,32 +10,31 @@ World Bank Open Data API: \url{https://data.worldbank.org/indicator/SP.POP.TOTL}
 get_indonesia_population()
 }
 \value{
-A tibble with the following columns:
+A tibble with:
 \itemize{
-  \item \code{indicator}: Indicator name (e.g., "Population, total")
-  \item \code{country}: Country name ("Indonesia")
-  \item \code{year}: Year of the data (integer)
-  \item \code{value}: Population as a numeric value
-  \item \code{value_label}: Formatted population with commas (e.g., "126,000,000")
+  \item \code{indicator}: Indicator name.
+  \item \code{country}: Country name ("Indonesia").
+  \item \code{year}: Year (integer).
+  \item \code{value}: Population (numeric).
+  \item \code{value_label}: Formatted population (e.g., "126,000,000").
 }
+Returns \code{NULL} if API request fails or data is unavailable.
 }
 \description{
 Retrieves Indonesia's total population for the years 2010 to 2022
 using the World Bank Open Data API. The indicator used is \code{SP.POP.TOTL}.
 }
 \details{
-The function sends a GET request to the World Bank API.
-If the API request fails or returns an error status code, the function returns \code{NULL} with an informative message.
+If the API request fails for any reason (network issue, timeout,
+invalid HTTP status, or malformed JSON), the function returns \code{NULL}
+with an informative message.
 }
 \note{
-Requires internet connection. The data is retrieved in real time from the World Bank API.
+Requires internet connection.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_population()
+\donttest{
+get_indonesia_population()
 }
 
-}
-\seealso{
-\code{\link[httr]{GET}}, \code{\link[jsonlite]{fromJSON}}, \code{\link[dplyr]{as_tibble}}, \code{\link[scales]{comma}}
 }

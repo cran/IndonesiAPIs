@@ -1,5 +1,5 @@
 # IndonesiAPIs - Access Indonesian Data via Public APIs and Curated Datasets
-# Version 0.1.0
+# Version 0.1.1
 # Copyright (c) 2025 Renzo Caceres Rossi
 # Licensed under the MIT License.
 # See the LICENSE file in the root directory for full license text.
@@ -10,6 +10,7 @@ library(testthat)
 
 test_that("get_indonesia_energy_use() returns a tibble with expected structure", {
   skip_on_cran()
+
   result <- get_indonesia_energy_use()
 
   # Structure
@@ -28,42 +29,38 @@ test_that("get_indonesia_energy_use() returns a tibble with expected structure",
 
 test_that("get_indonesia_energy_use() returns correct dimensions and years", {
   skip_on_cran()
+
   result <- get_indonesia_energy_use()
 
-  # Should be 13 rows (2010–2022 inclusive)
+  # Expected number of rows (2010 to 2022 inclusive)
   expect_equal(nrow(result), 13)
 
-  # Years must match exactly 2010:2022
+  # Years should match exactly 2010:2022
   expect_equal(sort(result$year), 2010:2022)
 
-  # Years sorted in descending order
-  expect_equal(result$year, sort(result$year, decreasing = TRUE))
+  # Data should be sorted in descending years
+  expect_true(all(diff(result$year) <= 0))
 })
 
-test_that("get_indonesia_energy_use() returns consistent country and indicator", {
+test_that("get_indonesia_energy_use() returns consistent values for Indonesia", {
   skip_on_cran()
+
   result <- get_indonesia_energy_use()
 
-  # Country always Indonesia
+  # Country should always be Indonesia
   expect_true(all(result$country == "Indonesia"))
 
-  # Indicator must match energy use label
+  # Indicator should always match Energy use
   expect_true(all(grepl("Energy use", result$indicator, ignore.case = TRUE)))
-})
+  expect_true(all(grepl("kg of oil equivalent", result$indicator, ignore.case = TRUE)))
 
-test_that("get_indonesia_energy_use() returns valid values", {
-  skip_on_cran()
-  result <- get_indonesia_energy_use()
-
-  # Values should be numeric and >= 0
-  expect_true(all(is.na(result$value) | result$value >= 0))
-
-  # Ensure no NA in year column
-  expect_false(any(is.na(result$year)))
+  # Values should all be positive numbers
+  expect_true(all(result$value > 0, na.rm = TRUE))
 })
 
 test_that("get_indonesia_energy_use() handles API errors gracefully", {
   skip_on_cran()
+
   result <- tryCatch(get_indonesia_energy_use(), error = function(e) NULL)
   expect_true(is.null(result) || inherits(result, "tbl_df"))
 })

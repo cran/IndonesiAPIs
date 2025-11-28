@@ -18,6 +18,7 @@ A tibble with the following columns:
   \item \code{value}: GDP value in numeric form
   \item \code{value_label}: Formatted GDP value (e.g., "1,466,464,899,304")
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves Indonesia's Gross Domestic Product (GDP) in current US dollars
@@ -32,8 +33,8 @@ If the API request fails or returns an error status code, the function returns \
 Requires internet connection. The data is retrieved in real time from the World Bank API.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_gdp()
+\donttest{
+get_indonesia_gdp()
 }
 
 }

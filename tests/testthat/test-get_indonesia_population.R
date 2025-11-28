@@ -1,5 +1,5 @@
 # IndonesiAPIs - Access Indonesian Data via Public APIs and Curated Datasets
-# Version 0.1.0
+# Version 0.1.1
 # Copyright (c) 2025 Renzo Caceres Rossi
 # Licensed under the MIT License.
 # See the LICENSE file in the root directory for full license text.
@@ -10,11 +10,17 @@ library(testthat)
 
 test_that("get_indonesia_population() returns a tibble with expected structure", {
   skip_on_cran()
+
   result <- get_indonesia_population()
 
+  # Structure
   expect_s3_class(result, "tbl_df")
+  expect_equal(ncol(result), 5)
+
+  # Column names
   expect_named(result, c("indicator", "country", "year", "value", "value_label"))
 
+  # Column types
   expect_type(result$indicator, "character")
   expect_type(result$country, "character")
   expect_type(result$year, "integer")
@@ -22,90 +28,58 @@ test_that("get_indonesia_population() returns a tibble with expected structure",
   expect_type(result$value_label, "character")
 })
 
-test_that("get_indonesia_population() returns only Indonesia data", {
+test_that("get_indonesia_population() returns correct dimensions and years", {
   skip_on_cran()
-  result <- get_indonesia_population()
-  expect_true(all(result$country == "Indonesia"))
-})
 
-test_that("get_indonesia_population() returns population indicator only", {
-  skip_on_cran()
   result <- get_indonesia_population()
-  expect_true(all(result$indicator == "Population, total"))
-})
 
-test_that("get_indonesia_population() returns years from 2010 to 2022", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_setequal(result$year, 2010:2022)
-})
-
-test_that("get_indonesia_population() returns 13 rows", {
-  skip_on_cran()
-  result <- get_indonesia_population()
+  # Expected number of rows (2010 to 2022 inclusive)
   expect_equal(nrow(result), 13)
+
+  # Years should match exactly 2010:2022
+  expect_equal(sort(result$year), 2010:2022)
+
+  # Data should be sorted in descending years
+  expect_true(all(diff(result$year) <= 0))
 })
 
-test_that("get_indonesia_population() includes non-negative population values or NA", {
+test_that("get_indonesia_population() returns consistent values for Indonesia", {
   skip_on_cran()
+
   result <- get_indonesia_population()
-  expect_true(all(is.na(result$value) | result$value >= 0))
+
+  # Country should always be Indonesia
+  expect_true(all(result$country == "Indonesia"))
+
+  # Indicator should always match Population
+  expect_true(all(grepl("Population", result$indicator, ignore.case = TRUE)))
+
+  # Values should all be positive numbers
+  expect_true(all(result$value > 0, na.rm = TRUE))
+
+  # Population should be within reasonable range (200M - 300M)
+  expect_true(all(result$value >= 200000000 & result$value <= 300000000, na.rm = TRUE))
+
+  # value_label should contain commas (formatted numbers)
+  expect_true(all(grepl(",", result$value_label, fixed = TRUE)))
 })
 
-test_that("get_indonesia_population() includes valid year values", {
+test_that("get_indonesia_population() value_label matches value formatting", {
   skip_on_cran()
+
   result <- get_indonesia_population()
-  expect_true(all(!is.na(result$year)))
-  expect_true(all(result$year >= 2010 & result$year <= 2022))
+
+  # value_label should not be NA when value is not NA
+  non_na_values <- !is.na(result$value)
+  expect_true(all(!is.na(result$value_label[non_na_values])))
+
+  # All value_labels should be non-empty strings
+  expect_true(all(nchar(result$value_label) > 0))
 })
 
-test_that("get_indonesia_population() includes properly formatted value_label", {
+test_that("get_indonesia_population() handles API errors gracefully", {
   skip_on_cran()
-  result <- get_indonesia_population()
-  expect_true(all(grepl("^[0-9]{1,3}(,[0-9]{3})*$", result$value_label[!is.na(result$value_label)])))
-})
 
-test_that("get_indonesia_population(): years are sorted descending", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_equal(result$year, sort(result$year, decreasing = TRUE))
-})
-
-test_that("get_indonesia_population(): no year value is NA", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_false(any(is.na(result$year)))
-})
-
-test_that("get_indonesia_population(): value column is integer or NA", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_type(result$value, "integer")
-  expect_true(all(is.finite(result$value) | is.na(result$value)))
-})
-
-test_that("get_indonesia_population(): indicator is consistent", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_equal(length(unique(result$indicator)), 1)
-})
-
-test_that("get_indonesia_population(): country is consistent", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_equal(length(unique(result$country)), 1)
-})
-
-test_that("get_indonesia_population() allows for missing values (e.g., NA)", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  expect_true(any(is.na(result$value)) || all(!is.na(result$value)))  # tolerate either case
-})
-
-test_that("get_indonesia_population(): population values are reasonable", {
-  skip_on_cran()
-  result <- get_indonesia_population()
-  # Population should be positive and reasonable for Indonesia
-  valid_values <- result$value[!is.na(result$value)]
-  expect_true(all(valid_values > 0 & valid_values < 500000000))  # Under 500 million
+  result <- tryCatch(get_indonesia_population(), error = function(e) NULL)
+  expect_true(is.null(result) || inherits(result, "tbl_df"))
 })

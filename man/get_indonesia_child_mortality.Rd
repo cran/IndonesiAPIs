@@ -17,6 +17,7 @@ A tibble with the following columns:
   \item \code{year}: Year of the data (integer)
   \item \code{value}: Under-5 mortality rate per 1,000 live births (numeric)
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves Indonesia's under-five mortality rate (per 1,000 live births)
@@ -32,8 +33,8 @@ the function returns \code{NULL} with an informative message.
 Requires internet connection.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_child_mortality()
+\donttest{
+get_indonesia_child_mortality()
 }
 
 }

@@ -19,6 +19,7 @@ A tibble with the following columns:
   \item \code{local_name}: Holiday name in the local language (Indonesian)
   \item \code{name}: Holiday name in English
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves the list of official public holidays in Indonesia for a specific year
@@ -31,7 +32,9 @@ the current status of holidays for the requested year.
 The field names returned are consistent with the API structure.
 }
 \examples{
+\donttest{
 get_indonesia_holidays(2024)
 get_indonesia_holidays(2025)
+}
 
 }

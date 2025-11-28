@@ -1,5 +1,5 @@
 # IndonesiAPIs - Access Indonesian Data via Public APIs and Curated Datasets
-# Version 0.1.0
+# Version 0.1.1
 # Copyright (c) 2025 Renzo Caceres Rossi
 # Licensed under the MIT License.
 # See the LICENSE file in the root directory for full license text.
@@ -11,6 +11,7 @@ library(testthat)
 
 test_that("get_country_info_idn() returns a tibble with expected structure", {
   skip_on_cran()
+
   result <- get_country_info_idn()
 
   # Structure
@@ -37,8 +38,10 @@ test_that("get_country_info_idn() returns a tibble with expected structure", {
 
 test_that("get_country_info_idn() returns consistent values for Indonesia", {
   skip_on_cran()
+
   result <- get_country_info_idn()
 
+  # Fixed values from API
   expect_equal(result$name_common, "Indonesia")
   expect_equal(result$capital, "Jakarta")
   expect_equal(result$region, "Asia")
@@ -57,6 +60,7 @@ test_that("get_country_info_idn() returns consistent values for Indonesia", {
 
 test_that("get_country_info_idn() handles API errors gracefully", {
   skip_on_cran()
+
   result <- tryCatch(get_country_info_idn(), error = function(e) NULL)
   expect_true(is.null(result) || inherits(result, "tbl_df"))
 })

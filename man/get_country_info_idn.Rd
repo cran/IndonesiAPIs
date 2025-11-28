@@ -21,6 +21,7 @@ A tibble with the following 8 columns:
   \item \code{population}: Population of the country.
   \item \code{languages}: Languages spoken in the country, as a comma-separated string.
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves selected, essential information about Indonesia using the REST Countries API.
@@ -39,6 +40,8 @@ Indonesia is not found, it returns \code{NULL} and prints a message.
 Requires internet connection. The data is retrieved in real time from the REST Countries API.
 }
 \examples{
+\donttest{
 get_country_info_idn()
+}
 
 }

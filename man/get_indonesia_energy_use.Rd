@@ -17,6 +17,7 @@ A tibble with the following columns:
   \item \code{year}: Year of the data (integer)
   \item \code{value}: Energy use in kilograms of oil equivalent per capita
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves Indonesia's energy use per capita, measured in kilograms of oil equivalent,
@@ -32,8 +33,8 @@ the function returns \code{NULL} with an informative message.
 Requires internet connection.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_energy_use()
+\donttest{
+get_indonesia_energy_use()
 }
 
 }

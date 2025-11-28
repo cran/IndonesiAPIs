@@ -17,6 +17,7 @@ A tibble with the following columns:
   \item \code{year}: Year of the data (integer)
   \item \code{value}: Hospital beds per 1,000 people (numeric)
 }
+Returns \code{NULL} if the API is unavailable or returns an error.
 }
 \description{
 Retrieves data on the number of hospital beds per 1,000 people in Indonesia
@@ -32,8 +33,8 @@ the function returns \code{NULL} with an informative message.
 Requires internet connection.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_hospital_beds()
+\donttest{
+get_indonesia_hospital_beds()
 }
 
 }

@@ -1,5 +1,5 @@
 # IndonesiAPIs - Access Indonesian Data via Public APIs and Curated Datasets
-# Version 0.1.0
+# Version 0.1.1
 # Copyright (c) 2025 Renzo Caceres Rossi
 # Licensed under the MIT License.
 # See the LICENSE file in the root directory for full license text.
@@ -24,25 +24,60 @@
 #'   \item \code{local_name}: Holiday name in the local language (Indonesian)
 #'   \item \code{name}: Holiday name in English
 #' }
+#' Returns \code{NULL} if the API is unavailable or returns an error.
 #'
 #' @source Data obtained from the Nager.Date API: \url{https://date.nager.at/}
 #'
 #' @examples
+#' \donttest{
 #' get_indonesia_holidays(2024)
 #' get_indonesia_holidays(2025)
+#' }
 #'
-#' @importFrom httr GET status_code content
+#' @importFrom httr GET status_code content http_error http_status timeout
 #' @importFrom jsonlite fromJSON
 #' @importFrom tibble tibble
 #'
 #' @export
 get_indonesia_holidays <- function(year) {
   url <- sprintf("https://date.nager.at/api/v3/PublicHolidays/%s/ID", year)
-  response <- httr::GET(url)
-  if (httr::status_code(response) != 200) {
-    stop("Failed to retrieve data from Nager.Date API. Check the year or try again later.")
+
+  # Try to make the request with error handling
+  response <- tryCatch({
+    httr::GET(url, httr::timeout(10))
+  }, error = function(e) {
+    message("Failed to connect to Nager.Date API: ", e$message)
+    message("Please check your internet connection and try again later.")
+    return(NULL)
+  })
+
+  # If tryCatch returned NULL, exit early
+  if (is.null(response)) {
+    return(NULL)
   }
-  data <- jsonlite::fromJSON(httr::content(response, as = "text", encoding = "UTF-8"))
+
+  # Check for HTTP errors
+  if (httr::http_error(response)) {
+    status <- httr::http_status(response)
+    message("Nager.Date API request failed with status ", httr::status_code(response), ": ", status$message)
+    message("The API may be temporarily unavailable or the year may be invalid. Please try again later.")
+    return(NULL)
+  }
+
+  # Try to parse the response
+  data <- tryCatch({
+    jsonlite::fromJSON(httr::content(response, as = "text", encoding = "UTF-8"))
+  }, error = function(e) {
+    message("Failed to parse Nager.Date API response: ", e$message)
+    return(NULL)
+  })
+
+  if (is.null(data) || length(data) == 0) {
+    message("No holiday data returned from the Nager.Date API for year ", year, ".")
+    return(NULL)
+  }
+
+  # Build and return the tibble
   tibble::tibble(
     date = as.Date(data$date),
     local_name = data$localName,

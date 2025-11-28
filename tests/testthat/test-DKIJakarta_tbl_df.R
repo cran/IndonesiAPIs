@@ -1,5 +1,5 @@
 # IndonesiAPIs - Access Indonesian Data via Public APIs and Curated Datasets
-# Version 0.1.0
+# Version 0.1.1
 # Copyright (c) 2025 Renzo Caceres Rossi
 # Licensed under the MIT License.
 # See the LICENSE file in the root directory for full license text.

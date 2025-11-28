@@ -10,13 +10,15 @@ World Bank Open Data API: \url{https://data.worldbank.org/indicator/SL.UEM.TOTL.
 get_indonesia_unemployment()
 }
 \value{
-A tibble with the following columns:
+A tibble with:
 \itemize{
-  \item \code{indicator}: Indicator name (e.g., "Unemployment, total (% of total labor force)")
-  \item \code{country}: Country name ("Indonesia")
-  \item \code{year}: Year of the data (integer)
-  \item \code{value}: Unemployment rate as percentage in numeric form
+  \item \code{indicator}: Indicator name.
+  \item \code{country}: Country name ("Indonesia").
+  \item \code{year}: Year (integer).
+  \item \code{value}: Unemployment rate (numeric).
+  \item \code{value_label}: Formatted unemployment rate (e.g., "5.2%").
 }
+Returns \code{NULL} if API request fails or data is unavailable.
 }
 \description{
 Retrieves Indonesia's Unemployment, total (% of total labor force)
@@ -24,18 +26,16 @@ for the years 2010 to 2022 using the World Bank Open Data API.
 The indicator used is \code{SL.UEM.TOTL.ZS}.
 }
 \details{
-The function sends a GET request to the World Bank API.
-If the API request fails or returns an error status code, the function returns \code{NULL} with an informative message.
+If the API request fails for any reason (network issue, timeout,
+invalid HTTP status, or malformed JSON), the function returns \code{NULL}
+with an informative message.
 }
 \note{
-Requires internet connection. The data is retrieved in real time from the World Bank API.
+Requires internet connection.
 }
 \examples{
-if (interactive()) {
-  get_indonesia_unemployment()
+\donttest{
+get_indonesia_unemployment()
 }
 
-}
-\seealso{
-\code{\link[httr]{GET}}, \code{\link[jsonlite]{fromJSON}}, \code{\link[dplyr]{as_tibble}}
 }

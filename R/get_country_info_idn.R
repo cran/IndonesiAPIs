@@ -1,5 +1,5 @@
 # IndonesiAPIs - Access Indonesian Data via Public APIs and Curated Datasets
-# Version 0.1.0
+# Version 0.1.1
 # Copyright (c) 2025 Renzo Caceres Rossi
 # Licensed under the MIT License.
 # See the LICENSE file in the root directory for full license text.
@@ -25,6 +25,7 @@
 #'   \item \code{population}: Population of the country.
 #'   \item \code{languages}: Languages spoken in the country, as a comma-separated string.
 #' }
+#' Returns \code{NULL} if the API is unavailable or returns an error.
 #'
 #' @details
 #' The function sends a GET request to the REST Countries API. If the API returns data for Indonesia,
@@ -36,26 +37,67 @@
 #' @source REST Countries API: \url{https://restcountries.com/}
 #'
 #' @examples
+#' \donttest{
 #' get_country_info_idn()
+#' }
 #'
-#' @importFrom httr GET content http_error
+#' @importFrom httr GET content http_error http_status
 #' @importFrom jsonlite fromJSON
 #' @importFrom tibble tibble
 #' @export
 get_country_info_idn <- function() {
   url <- "https://restcountries.com/v3.1/name/indonesia?fullText=true"
-  response <- httr::GET(url)
-  if (httr::http_error(response)) {
-    message("API request failed.")
+
+  # Try to make the request with error handling
+  response <- tryCatch({
+    httr::GET(url, httr::timeout(10))
+  }, error = function(e) {
+    message("Failed to connect to REST Countries API: ", e$message)
+    message("Please check your internet connection and try again later.")
+    return(NULL)
+  })
+
+  # If tryCatch returned NULL, exit early
+  if (is.null(response)) {
     return(NULL)
   }
-  data_raw <- httr::content(response, as = "text", encoding = "UTF-8")
-  data_list <- jsonlite::fromJSON(data_raw)
-  if (length(data_list) == 0) {
+
+  # Check for HTTP errors
+  if (httr::http_error(response)) {
+    status <- httr::http_status(response)
+    message("REST Countries API request failed with status ", status$category, ": ", status$message)
+    message("The API may be temporarily unavailable. Please try again later.")
+    return(NULL)
+  }
+
+  # Try to parse the response
+  data_raw <- tryCatch({
+    httr::content(response, as = "text", encoding = "UTF-8")
+  }, error = function(e) {
+    message("Failed to read API response: ", e$message)
+    return(NULL)
+  })
+
+  if (is.null(data_raw)) {
+    return(NULL)
+  }
+
+  # Try to parse JSON
+  data_list <- tryCatch({
+    jsonlite::fromJSON(data_raw)
+  }, error = function(e) {
+    message("Failed to parse API response: ", e$message)
+    return(NULL)
+  })
+
+  if (is.null(data_list) || length(data_list) == 0) {
     message("No data found for Indonesia.")
     return(NULL)
   }
+
   data <- data_list[1, ]  # Only one country should be returned
+
+  # Build and return the tibble
   tibble::tibble(
     name_common   = data$name$common,
     name_official = data$name$official,
